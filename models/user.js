@@ -19,7 +19,6 @@ const User = sequelize.define('user', {
     mobile: {
         type: Sequelize.STRING(15),
         allowNull: false,
-        unique: true,
         validate: {
             isNumeric: true,
             len: [10, 15]

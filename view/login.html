@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Resources/login.css">
+    <script src="/login-signup.js"></script>
+    <title>Login</title>
+</head>
+<body>
+    <section class="login-contain">
+        <h2>Login</h2>
+        <form id="signUpForm" onsubmit="checkLogin(event)">
+            <div class="input-group">
+                <label for="UserMail">Email:</label>
+                <input type="email" name="UserMail" id="UserMail" required>
+            </div>
+            <div class="input-group">
+                <label for="Password">Password</label>
+                <input type="password" name="Password" id="Password">
+            </div>
+            <span id="error"></span>
+            <button type="submit">Login!</button>
+        </form>
+        <p>New User?<a href="http://localhost:3200/user/create-user">Sign-Up!</a></p>
+    </section>
+</body>
+</html>

@@ -7,21 +7,24 @@ async function checkSignUp(event) {
     const password = document.querySelector('#Password').value;
     const rePass = document.querySelector('#Repeat-Password').value;
     if(rePass !== password) {
+        console.log('Incorrect Password Detected');
         const errSpan = document.querySelector('#error');
         errSpan.innerHTML = "<span style='color: red;'>" + "Password does not match!</span>"
     } else {
+        console.log('Proceeding');
+        console.log(username, " ", email, " ", number, " ", password);
         try {
             const response = await fetch(`${backendAPI}/user/create-user`, {
                 method:"POST",
                 headers: {
                     'Content-Type':'application/json'
                 },
-                body: {username, email, number, password}
+                body: JSON.stringify({username, email, number, password})
             });
             console.log("Request Sent!");
             if(response.ok) {
                 alert('User Created!');
-                //window.location.href
+                window.location.href=`${backendAPI}/user/login`;
             } else {
                 if(response.status === 409){
                     alert("Email or Number already in Use!");

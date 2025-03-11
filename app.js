@@ -9,7 +9,10 @@ const userRoutes = require('./routes/user');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: '*',        //means takes request from all IP's we can also just give a simple live server IP: http://127.0.0.1:'PORT' 
+    //method: ['GET', 'DELETE']     //This means that only GEt and Delete methods are allowed from this IP, we can also add different methods combinations
+}));
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));

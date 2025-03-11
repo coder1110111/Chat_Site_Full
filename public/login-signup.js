@@ -1,6 +1,7 @@
 const backendAPI = "http://localhost:3200";
 async function checkSignUp(event) {
     event.preventDefault();
+
     const username = document.querySelector('#UserName').value;
     const email = document.querySelector('#UserMail').value;
     const number = document.querySelector('#UserNumber').value;
@@ -36,5 +37,39 @@ async function checkSignUp(event) {
         } catch {
             alert("Server Unavailable!");
         }
+    }
+}
+
+async function checkLogin(event) {
+    event.preventDefault();
+    const email = document.querySelector('#UserMail').value;
+    const password = document.querySelector('#Password').value;
+
+    try {
+        const response = await fetch(`${backendAPI}/user/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({email, password})
+        });
+        console.log('Login Request Sent!');
+        if(response.ok) {
+            response.json()
+            .then(result => {
+                console.log(result);
+                localStorage.setItem('token', result.token);
+                alert(result.message);
+                //window.location.href=
+            })
+            .catch(err => alert(err));
+        }
+        else if(!response.ok) {
+            response.json().then(result => {
+                alert(result.message);
+            }).catch(err => console.log(err));
+        }
+    } catch(err) {
+        console.log(err);
     }
 }

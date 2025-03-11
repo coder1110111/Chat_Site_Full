@@ -47,3 +47,30 @@ exports.postPage = async (req, res, next) => {
 exports.getLogin = (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'view', 'login.html'));
 }
+
+exports.postLogin = async (req, res) => {
+    const {email, password} = req.body;
+    console.log(email + " " + password);
+    if(!email || !password) {
+        return res.status(400).json({message: 'Validation Error!'});
+    } else {
+        try {
+            const user = await User.findOne({where: {email}});
+            if(!user) {
+                return res.status(409).json({message: 'Email is not Registered. Please Register to access site.'});
+            } else {
+                const checkPass = await bcrypt.compare(password, user.password);
+                if(checkPass) {
+                    //later can generate jswtoken
+                    const token = jwt.sign({id: user.id}, process.env.JWT_KEY);
+                    return res.status(200).json({message:'Successfully Logged In!', token});
+                }
+                else if(!checkPass) {
+                    return res.status(401).json({message: 'Password Incorrect!'});
+                }
+            }
+        } catch {
+            return res.status(500).json({error: 'Internal Server Error!'});
+        }
+    }
+}

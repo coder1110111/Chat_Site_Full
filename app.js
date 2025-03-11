@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
+const chatRoutes = require('./routes/chat');
 
 const app = express();
 
@@ -18,6 +19,9 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/user', userRoutes);
+app.use('/chatApp', chatRoutes);
+
+
 app.use((req, res, next) => {
     res.status(404).sendFile(path.join(__dirname, 'view', '404.html'));
 })

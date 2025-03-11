@@ -60,7 +60,7 @@ async function checkLogin(event) {
                 console.log(result);
                 localStorage.setItem('token', result.token);
                 alert(result.message);
-                //window.location.href=
+                window.location.href=`${backendAPI}/chatApp`;
             })
             .catch(err => alert(err));
         }

@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/Resources/main.css">
+    <script src="/chat.js"></script>
     <title>ChatApp</title>
 </head>
 <body>
     <header>
         <h1>Chat App</h1>
+        <!--<button type="submit">Logout</button>-->
     </header>
     <section class="main-chat-section">
         <ul class="chat-section">
@@ -17,6 +19,7 @@
         </ul>
     </section>
     <footer class="chat-input">
+        <span id="chatEmpty">chatbo is empty</span>
         <input type="text" id="chat-box" name="chat-box" placeholder="Type a Message...">
         <button type="submit" id="sendChatBtn">Send ></button>
     </footer>

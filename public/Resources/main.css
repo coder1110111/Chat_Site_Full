@@ -1,4 +1,4 @@
-/* Reset some default styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -21,10 +21,13 @@ header {
     text-align: center;
     padding: 15px;
     width: 100%;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
 }
 
+footer {
+    display: flex;
+}
 .main-chat-section {
     flex: 1;
     width: 100%;
@@ -47,6 +50,7 @@ header {
     margin-bottom: 10px;
     width: fit-content;
     max-width: 80%;
+    box-shadow: 0 
 }
 
 .chat-section li:nth-child(even) {
@@ -85,4 +89,8 @@ header {
 
 #sendChatBtn:hover {
     background: #0056b3;
+}
+
+#chatEmpty {
+    color: red;
 }

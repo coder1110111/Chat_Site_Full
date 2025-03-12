@@ -8,11 +8,11 @@ exports.getMainPage = (req, res) => {
 
 exports.postChat = async (req, res) => {
     const t = await sequelize.transaction();
-    const {chatData} = req.body;
+    const {chat} = req.body;
     
     try {
         await req.user.createChat({
-            message: chatData
+            message: chat
         }, {transaction: t});
         await t.commit();
         return res.status(201).json({message: 'message Sent'});

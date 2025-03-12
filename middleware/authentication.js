@@ -4,9 +4,9 @@ const User = require('../models/user');
 
 const authenticate = async (req, res, next) => {
     console.log('in Authentication');
-    console.log(req.headers);
-    const token = req.get('Authorization');
-    console.log(token);
+    console.log(req);
+    const token = req.header('authorization');
+    console.log(token + '>>> is token');
     if(!token){
         return res.status(401).json({message: "Unauthorized: Please login again!"});
     }

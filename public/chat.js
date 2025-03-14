@@ -27,7 +27,7 @@ async function fetchChatData(){
 }
 
 function chatToDisplay(chat){
-    console.log(chat);
+    //console.log(chat);
     const chatList = document.getElementsByClassName('chat-section')[0];
     const newli = document.createElement('li');
     newli.innerHTML = `${chat.message}`;
@@ -37,7 +37,7 @@ function chatToDisplay(chat){
 
 
 async function addChat() {    
-    console.log('Send button clicked');
+    //console.log('Send button clicked');
     const chatData = document.querySelector('#chat-box').value;
     const chatEmpty = document.querySelector('#chatEmpty');
     if(!chatData) {

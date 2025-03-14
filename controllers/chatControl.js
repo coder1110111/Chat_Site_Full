@@ -3,7 +3,7 @@ const Chat = require('../models/chat');
 const sequelize = require('../util/database');
 
 exports.getMainPage = (req, res) => {
-    console.log('Get Main chat page');
+    //console.log('Get Main chat page');
     res.sendFile(path.join(__dirname, '..', 'view', 'main.html'));
 }
 
@@ -25,7 +25,7 @@ exports.postChat = async (req, res) => {
 }
 
 exports.getChatData = async (req, res) => {
-    console.log('in to get Data');
+    //console.log('in to get Data');
     try {
         const userId = req.user.id;
         const chatData = await Chat.findAll({where: {userId}});

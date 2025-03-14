@@ -4,39 +4,66 @@ window.addEventListener('DOMContentLoaded', ()=>{
     const sendBtn = document.getElementById('sendChatBtn');
     //console.log(sendBtn);
     sendBtn.addEventListener('click', addChat);
+    
 
     //setting a time interval to call fetchChatData every 1 second
-    setInterval(loopFunction, 1000);
     
+    setInterval(loopFunction, 10000);
     loopFunction();
 })
 
 function loopFunction() {
-    fetchChatData();
+
+    //localStorage methods to store and get more chats to perform less data transfer
+
+    const oldmsg = JSON.parse(localStorage.getItem('msgArr')) || [];
+    if(oldmsg.length > 0) {        //checks if the local Storage has stored messages or not will execute one or the other argument function
+        console.log('something in localStorage');
+        const lastEle = oldmsg[oldmsg.length -1];
+        fetchChatData(lastEle.chat_id);
+    }
+    if(oldmsg === 0) {
+        console.log('Nothing in localStorage');
+        fetchChatData(0);
+    }
 }
 
 
-async function fetchChatData(){
-    console.log('fetchData Executed');
-    const chatsection = document.querySelector('.chat-section');
-    if(chatsection){
-        chatsection.innerHTML='';
-    }
-    
+async function fetchChatData(lastChatId){
+    console.log(lastChatId);
     try {
-        const response = await fetch(`${backendAPI}/get-chat-Data`, {
+        const response = await fetch(`${backendAPI}/get-chat-Data?lastChatId=${lastChatId}`, {
             headers:{
                 'authorization': localStorage.getItem('token')
             }
         });
         if(response.ok) {
-            const result = await response.json();
-            result.chatData.forEach(element => {
-                chatToDisplay(element);
-            });
+            const resultData = await response.json();
+            const result = resultData.chatData;
+            console.log(result);
+            if(result.length>0) {
+                let newMsgArr;
+                const oldMsgArr = JSON.parse(localStorage.getItem('msgArr')) || [];
+                if(oldMsgArr.length === 0) {
+                    newMsgArr = result;
+                } else {
+                    newMsgArr = result.concat(oldMsgArr);
+                }
+                newMessageDetected(result);     //remember messages are in Descending chat_id format
+                if(newMsgArr.length >20) {
+                    newMsgArr = newMsgArr.slice(0,20);
+                }
+                localStorage.setItem('msgArr', JSON.stringify(newMsgArr));
+            }
         }
     } catch(err) {
         alert(err);
+    }
+}
+
+function newMessageDetected(msgDispArr) {
+    for(let i=msgDispArr.length-1; i>=0; i--) {
+        chatToDisplay(msgDispArr[i]);
     }
 }
 

@@ -1,4 +1,5 @@
 const path = require('path');
+const Chat = require('../models/chat');
 const sequelize = require('../util/database');
 
 exports.getMainPage = (req, res) => {
@@ -22,3 +23,15 @@ exports.postChat = async (req, res) => {
         return res.status(500).json({message: 'Internal Server Error!'});
     }
 }
+
+exports.getChatData = async (req, res) => {
+    console.log('in to get Data');
+    try {
+        const userId = req.user.id;
+        const chatData = await Chat.findAll({where: {userId}});
+        return res.status(200).json({success: true,chatData});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({success: false, message: 'Internal Server error'});
+    }
+};

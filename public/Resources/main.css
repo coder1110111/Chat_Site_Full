@@ -23,6 +23,12 @@ header {
     width: 100%;
     font-size: 20px;
     font-weight: bold;
+    overflow-anchor: none;
+}
+
+#anchor {
+    overflow-anchor: auto;
+    height: 1px;
 }
 
 footer {

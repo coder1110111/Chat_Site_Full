@@ -4,10 +4,25 @@ window.addEventListener('DOMContentLoaded', ()=>{
     const sendBtn = document.getElementById('sendChatBtn');
     //console.log(sendBtn);
     sendBtn.addEventListener('click', addChat);
-    fetchChatData();
+
+    //setting a time interval to call fetchChatData every 1 second
+    setInterval(loopFunction, 1000);
+    
+    loopFunction();
 })
 
+function loopFunction() {
+    fetchChatData();
+}
+
+
 async function fetchChatData(){
+    console.log('fetchData Executed');
+    const chatsection = document.querySelector('.chat-section');
+    if(chatsection){
+        chatsection.innerHTML='';
+    }
+    
     try {
         const response = await fetch(`${backendAPI}/get-chat-Data`, {
             headers:{
@@ -15,11 +30,10 @@ async function fetchChatData(){
             }
         });
         if(response.ok) {
-            response.json().then(result => {
-                result.chatData.forEach(chat => {
-                    chatToDisplay(chat);
-                });
-            }).catch(err => console.log(err));
+            const result = await response.json();
+            result.chatData.forEach(element => {
+                chatToDisplay(element);
+            });
         }
     } catch(err) {
         alert(err);

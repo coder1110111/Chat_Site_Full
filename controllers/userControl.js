@@ -12,7 +12,7 @@ exports.getPage = (req, res, next) => {
 exports.postPage = async (req, res, next) => {
     console.log("Arrived Here!");
     const {username, email, number, password} = req.body;
-    console.log(username + email + number + password);
+    //console.log(username + email + number + password);
     if(!username || !email || !number || !password) {
         console.log("Validation Error!");
         return res.status(400).json({error: "All fields must be provided."});
@@ -29,7 +29,7 @@ exports.postPage = async (req, res, next) => {
         } */
         bcrypt.hash(password, 10, async (error, hash) => {
             //Stopped Here
-            console.log(error);
+            console.log(error);     //this line is giving undefined when there is no error!!!!!!!!!!!!!!!!!!!
             await User.create({
                 name: username,
                 email: email,

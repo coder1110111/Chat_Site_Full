@@ -1,6 +1,7 @@
 const path = require('path');
 const { Op } = require('sequelize');
 const Chat = require('../models/chat');
+const Group = require('../models/group');
 
 const sequelize = require('../util/database');
 
@@ -12,11 +13,13 @@ exports.getMainPage = (req, res) => {
 
 exports.postChat = async (req, res) => {
     const t = await sequelize.transaction();
-    const {chat} = req.body;
+    const {message} = req.body;
+    console.log(message);
     
     try {
-        await req.user.createChat({
-            message: chat
+        await req.group.createChat({
+            message_content : message,
+            sent_by: req.user.name + " " + req.user.email
         }, {transaction: t});
         await t.commit();
         return res.status(201).json({message: 'message Sent'});
@@ -27,19 +30,23 @@ exports.postChat = async (req, res) => {
     }
 }
 
-exports.getChatData = async (req, res) => {
+exports.getChatData = async (req, res) => { 
     //console.log('in to get Data');
-    const lastMsgId = req.query.lastChatId;
+    //console.log(req.user.id);
+    //console.log(req.group);
+    const lastMsgId = req.header('lastChatId');
+    //console.log(lastMsgId);
     try {
         //const userId = req.user.id;
         //console.log(lastMsgId);
         const chatData = await Chat.findAll(
             {
                 where: {
-                    chat_id: {[Op.gt]: lastMsgId}
+                    chat_id: {[Op.gt]: lastMsgId},
+                    group_id: req.group.group_id
                 },
                 order: [['chat_id', 'DESC']],
-                limit:10
+                limit: 50
             }
         );
         console.log(chatData);

@@ -11,6 +11,8 @@ const chatRoutes = require('./routes/chat');
 //Model Import
 const User = require('./models/user');
 const Chat = require('./models/chat');
+const Group = require('./models/group');
+const Connector = require('./models/connector');
 
 const app = express();
 
@@ -32,8 +34,14 @@ app.use((req, res, next) => {
 })
 
 //Database Relations
-User.hasMany(Chat, {foreignKey: "userId"});
-Chat.belongsTo(User, {constraints: true, onDelete: "CASCADE", foreignKey: "userId"})
+User.hasMany(Connector, {foreignKey: "user_id"});
+Connector.belongsTo(User, {constraints: true, onDelete: "CASCADE", foreignKey: "user_id"});
+
+Group.hasMany(Connector, {foreignKey: "group_id"});
+Connector.belongsTo(Group, {constraints: true, onDelete: "CASCADE", foreignKey: "group_id"});
+
+Group.hasMany(Chat, {foreignKey: "group_id"});
+Chat.belongsTo(Group, {constraints: true, onDelete: "CASCADE", foreignKey: "group_id"})
 
 
 const PORT=`${process.env.PORT}`;

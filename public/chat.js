@@ -5,7 +5,46 @@ window.addEventListener('DOMContentLoaded', ()=>{
     //console.log(sendBtn);
     sendBtn.addEventListener('click', addChat);
     
+    //CREATE GROUP FORM POP-UP WINDOW MANAGEMENT
+    const createGroupBtn = document.getElementById('createGroupBtn');
+    const groupPopup = document.getElementById('groupPopup');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const createBtn = document.getElementById('createBtn');
+    const contactList = document.getElementById('contact-list');
+    const chatInput = document.getElementById('chat-box');
+    
+    // initially text elements are disabled for convenience
+    chatInput.disabled = true;
+    sendBtn.disabled = true;
 
+    //DISPLAYS POPuP FORM
+    createGroupBtn.addEventListener('click', () => {
+        groupPopup.style.display = 'flex';
+    })
+
+    //Hides popup menu
+    cancelBtn.addEventListener('click', () => {
+        const groupNameInput = document.getElementById('groupName');
+
+        groupNameInput.value = '';
+        groupPopup.style.display = 'none';
+    })
+
+    createBtn.addEventListener('click', () => createGroup());
+
+    //Highlight the selected group
+    contactList.addEventListener('click', (event) => {
+        if(event.target.tagName === 'LI') {
+            const previousSelected = document.querySelector('.contact-selected');
+            if(previousSelected) {
+                previousSelected.classList.remove('contact-selected');
+            }
+            const chatSection = document.querySelector('.chat-section');
+            chatSection.innerHTML='';
+            event.target.classList.add('contact-selected');
+        }
+    })
+    
     //setting a time interval to call fetchChatData every 1 second
     
     setInterval(loopFunction, 10000);
@@ -19,7 +58,8 @@ function loopFunction() {
     const oldmsg = JSON.parse(localStorage.getItem('msgArr')) || [];
     if(oldmsg.length > 0) {        //checks if the local Storage has stored messages or not will execute one or the other argument function
         console.log('something in localStorage');
-        const lastEle = oldmsg[oldmsg.length -1];
+        const lastEle = oldmsg[0];
+        console.log(lastEle.chat_id);
         fetchChatData(lastEle.chat_id);
     }
     if(oldmsg === 0) {
@@ -57,7 +97,7 @@ async function fetchChatData(lastChatId){
             }
         }
     } catch(err) {
-        alert(err);
+        console.log(err);
     }
 }
 
@@ -106,4 +146,24 @@ async function addChat() {
             console.log(err);
         }
     }
+}
+
+function createGroup() {
+
+    const groupPopup = document.getElementById('groupPopup');
+    const groupNameInput = document.getElementById('groupName');
+
+    const groupName = groupNameInput.value.trim();
+    if(groupName === '') {
+        alert('Please enter a Group name.');
+        return;
+    }
+    
+    //below this will be calling API for groupwork
+    console.log('Created group: ', groupName);
+
+    groupPopup.style.display = 'none';
+
+    groupNameInput.value = '';
+    
 }

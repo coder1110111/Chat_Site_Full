@@ -58,7 +58,9 @@ async function checkLogin(event) {
             response.json()
             .then(result => {
                 console.log(result);
+                console.log(result.userData);
                 localStorage.setItem('token', result.token);
+                localStorage.setItem('userData', result.userData);
                 alert(result.message);
                 window.location.href=`${backendAPI}/chatApp`;
             })

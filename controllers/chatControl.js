@@ -56,3 +56,16 @@ exports.getChatData = async (req, res) => {
         res.status(500).json({success: false, message: 'Internal Server error'});
     }
 };
+
+exports.leaveGroup = async(req, res) => {
+    const t = await sequelize.transaction();
+    console.log(req.connection);
+    try {        
+        await req.connection.destroy({transaction : t});
+        await t.commit();
+        res.status(200).json({message: "Left Group"});
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({success: false, message: 'Internal Server error'});
+    }
+}

@@ -1,19 +1,71 @@
-const backendAPI = 'http://localhost:3200/chatApp'
+const backendAPI = 'http://localhost:3200';
 
 window.addEventListener('DOMContentLoaded', () => {
-    //Event listener on send btn
+
+    initializeGeneralButtons();     //Adds eventListener to all the buttons
+
+    //Highlight the selected Group
+    const contactList = document.getElementById('contact-list');
+    let intervalID = null; // Store the interval reference
+
+contactList.addEventListener('click', (event) => {
+    if (event.target.tagName === 'LI') {
+        const previousSelected = document.querySelector('.contact-selected');
+        if (previousSelected) {
+            previousSelected.classList.remove('contact-selected');
+        }
+        const toggleGrpHeaderBtn = document.querySelector('.group-header-buttons');
+        toggleGrpHeaderBtn.style.display='flex';
+
+        const toggleChatInput = document.querySelector('.chat-input');
+        toggleChatInput.style.display = 'flex';
+
+        const chatSection = document.querySelector('.chat-section');
+        chatSection.innerHTML = '';
+        event.target.classList.add('contact-selected');
+        const GroupName = event.target.innerHTML;
+        const groupTitle = document.querySelector('.group-title');
+        groupTitle.innerHTML = GroupName;
+        
+        //console.log('Executed checkpoint 1');
+        // Clear the previous interval before setting a new one
+        if (intervalID) {
+            clearInterval(intervalID);
+            console.log('Executed checkppoint if');
+        }
+
+        const groupId = event.target.id;
+        //console.log(groupId);
+        //console.log('Executed checkppoint 2');
+        ScreenFunction(groupId);
+        // Start a new interval and store its reference
+        intervalID = setInterval(() => loopFunction(groupId), 10000);
+
+        // Immediately call the function for the first fetch
+        loopFunction(groupId);
+        //console.log('Executed checkppoint 3');
+    }
+});
+    
+    setInterval(fetchUserGroupData, 120000);     //fetches User's Group every 30 seconds //will not be stopped       //This works not perfectly repeat group shows
+    fetchUserGroupData();       //fetches Group Data for this 
+});
+
+function initializeGeneralButtons() {
     const sendBtn = document.getElementById('sendChatBtn');
-    sendBtn.addEventListener('click', addChatInGroup);     ///////////need to define
-
-    //Initial state of buttons in chat-container
-    const chatInput = document.getElementById('chat-box');
-    const addMemberBtn = document.getElementById('addMemberBtn');
+    sendBtn.addEventListener('click',() => addChatInGroup());  //defined
+    
     const leaveGrp = document.getElementById('leaveGroupBtn');
+    leaveGrp.addEventListener('click', () => leaveGrpExecution());  //EventListener to leave Group
 
-    sendBtn.disabled = true;
-    chatInput.disabled = true;
-    addMemberBtn.disabled = true;
-    leaveGrp.disabled = true; 
+    const memberListBtn = document.querySelector('#generateMemberList');
+    memberListBtn.addEventListener('click', () => memberListToggle());
+
+    const memberListClose = document.getElementById('memberListClose');
+    memberListClose.addEventListener('click', ()=> {
+        const memberPopup = document.querySelector('.popup-container2');
+        memberPopup.style.display= 'none';
+    })
 
     //Group Create PopUp Menu
     const createGroupBtn = document.getElementById('createGroupBtn');
@@ -27,6 +79,8 @@ window.addEventListener('DOMContentLoaded', () => {
         groupPopup.style.display = 'flex';
     });
 
+
+
     //Hides PopUp Menu
     cancelBtn.addEventListener('click', () => {
         groupNameInput.value = '';
@@ -35,59 +89,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //EventListener to create a group
     createBtn.addEventListener('click', createGroup);
-
-    //Highlight the selected Group
-    const contactList = document.getElementById('contact-list');
-
-    let intervalID = null; // Store the interval reference
-
-contactList.addEventListener('click', (event) => {
-    if (event.target.tagName === 'LI') {
-        const previousSelected = document.querySelector('.contact-selected');
-        if (previousSelected) {
-            previousSelected.classList.remove('contact-selected');
-        }
-
-        const chatSection = document.querySelector('.chat-section');
-        chatSection.innerHTML = '';
-        event.target.classList.add('contact-selected');
-        
-        sendBtn.disabled = false;
-        chatInput.disabled = false;
-        addMemberBtn.disabled = false;
-        leaveGrp.disabled = false;
-        console.log('Executed checkppoint 1');
-        // Clear the previous interval before setting a new one
-        if (intervalID) {
-            clearInterval(intervalID);
-            console.log('Executed checkppoint if');
-        }
-
-        const groupId = event.target.id;
-        console.log(groupId);
-        console.log('Executed checkppoint 2');
-        ScreenFunction(groupId);
-        // Start a new interval and store its reference
-        intervalID = setInterval(() => loopFunction(groupId), 10000);
-
-        // Immediately call the function for the first fetch
-        loopFunction(groupId);
-        console.log('Executed checkppoint 3');
-    }
-});
-
-    //addMemberPopup
-
-    //leaveGroupBtnExecution
-    
-    setInterval(fetchUserGroupData, 120000);     //fetches User's Group every 30 seconds //will not be stopped       //This works not perfectly repeat group shows
-    fetchUserGroupData();       //fetches Group Data for this 
-});
+}
 
 async function createGroup() {
     const groupName = document.getElementById('groupName');
     try {
-        const Response = await fetch(`${backendAPI}/create-Group`, {
+        const Response = await fetch(`${backendAPI}/chatApp/create-Group`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -97,7 +104,6 @@ async function createGroup() {
         });
 
         if(Response.ok) {
-            const grpCreateBtn = await Response.json();
             //console.log(grpCreateBtn);
             const closeBtn = document.getElementById('cancelBtn');
             closeBtn.click();
@@ -111,7 +117,7 @@ async function createGroup() {
 async function fetchUserGroupData() {
     
     try {
-        const grpDataResponse = await fetch(`${backendAPI}/get-Group-Data`, {
+        const grpDataResponse = await fetch(`${backendAPI}/chatApp/get-Group-Data`, {
             headers: {
                 'authorization': localStorage.getItem('token')
             }
@@ -154,7 +160,7 @@ async function addChatInGroup() {
     }
     const currGroupId = document.querySelector('.contact-selected').id;
     try {
-        const response = await fetch(`${backendAPI}/chat-post/${currGroupId}`, {
+        const response = await fetch(`${backendAPI}/chatApp/chat-post/${currGroupId}`, {
             method:'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -164,7 +170,7 @@ async function addChatInGroup() {
         });
         if(response.ok) {
             const result = await response.json();
-            console.log(result);
+            //console.log(result);
         }
     } catch(error) {
         alert(error);
@@ -173,25 +179,25 @@ async function addChatInGroup() {
 
 function loopFunction(eventId) {       //keep checking for chats available for the selected group
     const oldmsg = JSON.parse(localStorage.getItem(`${eventId}`)) || [];
-    console.log('in loop function');
-    console.log(oldmsg);
+    //console.log('in loop function');
+    //console.log(oldmsg);
     if(oldmsg.length > 0) {
-        console.log('something in local Storage');
+        //console.log('something in local Storage');
         ScreenFunction(oldmsg);
         const lastEle = oldmsg[0];      //stored in descending order
         fetchGroupChatData(eventId, lastEle.chat_id);
     }
     if(oldmsg.length === 0) {
-        console.log('Nothing in LocalStorage');
+        //console.log('Nothing in LocalStorage');
         fetchGroupChatData(eventId, 0);
     }
 }
 
 async function fetchGroupChatData(Grp_Id, lastChatId) {     //fetches chat for the selected group
-    console.log('fetchGroupChatData called successfully');
-    console.log(Grp_Id + "|||||" + lastChatId);
+    //console.log('fetchGroupChatData called successfully');
+    //console.log(Grp_Id + "|||||" + lastChatId);
     try{
-        const grpChatData = await fetch(`${backendAPI}/get-chat-Data/${Grp_Id}`,{
+        const grpChatData = await fetch(`${backendAPI}/chatApp/get-chat-Data/${Grp_Id}`,{
             headers: {
                 'authorization': localStorage.getItem('token'),
                 'lastChatId': lastChatId
@@ -233,10 +239,41 @@ function ScreenNewMsg(msgArray) {
 }
 
 function displayToUI(element) {
-    console.log(element);
+    //console.log(element);
     const chatList = document.getElementsByClassName('chat-section')[0];
     const newli = document.createElement('li');
     newli.innerHTML = `${element.message_content}`;
     newli.setAttribute('id', element.chat_id);
     chatList.appendChild(newli);
+}
+
+//Leave Group Execution
+async function leaveGrpExecution() {
+    const grpToLeave = document.querySelector('.contact-selected').id;
+    console.log(grpToLeave);
+    try {
+        const response = await fetch(`${backendAPI}/chatApp/leave-Group/${grpToLeave}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.getItem('token')
+            }
+        });
+        if(response.ok) {
+            const result = await response.json();
+            console.log(result);
+            fetchUserGroupData();
+        }
+        if(!response.ok) {
+            const failure = await response.json();
+            alert(failure);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function memberListToggle() {
+    const memberList = document.querySelector('.popup-container2');
+    memberList.style.display = 'flex';
 }

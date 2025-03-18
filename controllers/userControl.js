@@ -61,9 +61,11 @@ exports.postLogin = async (req, res) => {
             } else {
                 const checkPass = await bcrypt.compare(password, user.password);
                 if(checkPass) {
+                    console.log(user);
+                    const userData = user.name + " " + user.email;
                     //later can generate jswtoken
                     const token = jwt.sign({id: user.id}, process.env.JWT_KEY);
-                    return res.status(200).json({message:'Successfully Logged In!', token});
+                    return res.status(200).json({message:'Successfully Logged In!', token, userData});
                 }
                 else if(!checkPass) {
                     return res.status(401).json({message: 'Password Incorrect!'});

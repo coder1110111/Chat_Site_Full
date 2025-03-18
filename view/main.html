@@ -25,20 +25,26 @@
             <!--Here will be the title card for Group-->
             <div class="group-header">
                 <span class="group-title">Select a Group</span>
-                <div class="group-header-buttons">
-                    <button id="addMemberBtn" class="group-btn">➕</button>
-                    <button id="leaveGroupBtn" class="group-btn">Leave group</button>
+                <div class="group-header-buttons membershown">
+                    <button id="generateMemberList" class="group-btn">Members</button>
+                    <button id="leaveGroupBtn" class="group-btn danger">Leave group</button>
                 </div>
             </div>
 
             <ul class="chat-section">
-                <li>Hello</li>
-                <li>is everyone ok</li>
+                <li class="chat-message">
+                    <span class="sender-name">Alice</span>
+                    <p class="message-content">Hello</p>
+                </li>
+                <li class="chat-message">
+                    <span class="sender-name">John Doe</span>
+                    <p class="message-content">Hey There!</p>
+                </li>
             </ul>
             <div id="anchor"></div>
 
             <!-- Input Field inside chat-container -->
-            <div class="chat-input">
+            <div class="chat-input membershown">
                 <span id="chatEmpty"></span>
                 <input type="text" id="chat-box" name="chat-box" placeholder="Type a Message..." required>
                 <button type="submit" id="sendChatBtn">Send ></button>
@@ -46,7 +52,7 @@
         </div>
     </section>
 
-    <section id="groupPopup" class="popup-container">
+    <section id="groupPopup" class="popup-container1">
         <div class="popup-content">
             <h2>Create Group</h2>
             <input type="text" id="groupName" placeholder="Enter group name" required>
@@ -54,6 +60,33 @@
                 <button id="cancelBtn">Cancel</button>
                 <button id="createBtn">Create</button>
             </div>
+        </div>
+    </section>
+    <section id="memberPopup" class="popup-container2">
+        <div class="popup-content">
+            <h2>Group Members</h2>
+            <div class="member-controls">
+                <button class="add-btn">➕ Add Member</button>
+                <button id="memberListClose"  class="close-btn">✖ Close</button>
+            </div>
+    
+            <ul class="memberList">
+                <li class="member-item">
+                    <span class="member-name">Alice</span>
+                    <div class="member-actions">
+                        <button class="upgrade-btn">Upgrade</button>
+                        <button class="remove-btn">Remove</button>
+                    </div>
+                </li>
+                
+                <li class="member-item">
+                    <span class="member-name">John Doe</span>
+                    <div class="member-actions">
+                        <button class="upgrade-btn">Upgrade</button>
+                        <button class="remove-btn">Remove</button>
+                    </div>
+                </li>
+            </ul>
         </div>
     </section>
 

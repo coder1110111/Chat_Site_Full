@@ -15,4 +15,6 @@ router.post('/create-Group', authenticate, groupController.createGroup);
 router.post('/chat-post/:groupId', authenticate, GroupFinder, ConnectionTrue, chatController.postChat);
 router.get('/get-chat-Data/:groupId', authenticate, GroupFinder, ConnectionTrue, chatController.getChatData);
 
+router.delete('/leave-Group/:groupId', authenticate, GroupFinder, ConnectionTrue, chatController.leaveGroup);
+//router.use('/members')
 module.exports=router;

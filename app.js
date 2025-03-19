@@ -17,6 +17,12 @@ const Connector = require('./models/connector');
 
 const app = express();
 
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');  
+    next();
+})
+
 app.use(express.json());
 /* app.use(cors({
     origin: '*',        //means takes request from all IP's we can also just give a simple live server IP: http://127.0.0.1:'PORT' 

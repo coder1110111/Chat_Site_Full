@@ -66,7 +66,7 @@
         <div class="popup-content">
             <h2>Group Members</h2>
             <div class="member-controls">
-                <button class="add-btn">➕ Add Member</button>
+                <button id="addMemberToList"  class="add-btn admin">➕ Add Member</button>
                 <button id="memberListClose"  class="close-btn">✖ Close</button>
             </div>
     
@@ -74,19 +74,30 @@
                 <li class="member-item">
                     <span class="member-name">Alice</span>
                     <div class="member-actions">
-                        <button class="upgrade-btn">Upgrade</button>
-                        <button class="remove-btn">Remove</button>
+                        <button class="upgrade-btn admin">Upgrade</button>
+                        <button class="remove-btn admin">Remove</button>
                     </div>
                 </li>
                 
                 <li class="member-item">
-                    <span class="member-name">John Doe</span>
+                    <span class="role_type"><b>Admin</b></span>
+                    <span class="member-name"><u>John Doe</u></span>
                     <div class="member-actions">
                         <button class="upgrade-btn">Upgrade</button>
                         <button class="remove-btn">Remove</button>
                     </div>
                 </li>
             </ul>
+        </div>
+    </section>
+    <section id="addMemberPopup" class="popup-container1">
+        <div class="popup-content">
+            <h2>Add Member</h2>
+            <input type="text" id="memberDet" placeholder="Enter an email or Mobile no." required>
+            <div class="popup-buttons">
+                <button id="closeBtn">Cancel</button>
+                <button id="AddBtn">Add</button>
+            </div>
         </div>
     </section>
 

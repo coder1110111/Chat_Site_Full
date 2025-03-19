@@ -7,7 +7,8 @@ require("dotenv").config();
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
 const chatRoutes = require('./routes/chat');
-
+const memberRoutes = require('./routes/member');
+ 
 //Model Import
 const User = require('./models/user');
 const Chat = require('./models/chat');
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/user', userRoutes);
 app.use('/chatApp', chatRoutes);
+app.use('/grpFind', memberRoutes);
 
 
 app.use((req, res, next) => {

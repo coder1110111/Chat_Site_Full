@@ -39,7 +39,7 @@ contactList.addEventListener('click', (event) => {
         //console.log('Executed checkppoint 2');
         ScreenFunction(groupId);
         // Start a new interval and store its reference
-        intervalID = setInterval(() => loopFunction(groupId), 10000);
+        intervalID = setInterval(() => loopFunction(groupId), 3000);
 
         // Immediately call the function for the first fetch
         loopFunction(groupId);
@@ -67,6 +67,21 @@ function initializeGeneralButtons() {
         memberPopup.style.display= 'none';
     })
 
+    const addMemberBtn = document.getElementById('addMemberToList');
+    addMemberBtn.addEventListener('click', () => {
+        const addmemberPop = document.querySelector('#addMemberPopup');
+        addmemberPop.style.display = 'flex';
+    });
+
+    const AddBtn = document.getElementById('AddBtn');
+    AddBtn.addEventListener('click', ()=> addMemberFunction());
+
+    const closeMemberBtn = document.getElementById('closeBtn');
+    closeMemberBtn.addEventListener('click', () => {
+        const addmemberPop = document.querySelector('#addMemberPopup');
+        addmemberPop.style.display = 'none';
+    })
+
     //Group Create PopUp Menu
     const createGroupBtn = document.getElementById('createGroupBtn');
     const groupPopup = document.getElementById('groupPopup');
@@ -89,6 +104,8 @@ function initializeGeneralButtons() {
 
     //EventListener to create a group
     createBtn.addEventListener('click', createGroup);
+
+    
 }
 
 async function createGroup() {
@@ -170,6 +187,7 @@ async function addChatInGroup() {
         });
         if(response.ok) {
             const result = await response.json();
+            chatInput.value='';
             //console.log(result);
         }
     } catch(error) {
@@ -193,7 +211,7 @@ function loopFunction(eventId) {       //keep checking for chats available for t
     }
 }
 
-async function fetchGroupChatData(Grp_Id, lastChatId) {     //fetches chat for the selected group
+async function fetchGroupChatData(Grp_Id, lastChatId) {     //fetches chat for the selected group   //as well as member
     //console.log('fetchGroupChatData called successfully');
     //console.log(Grp_Id + "|||||" + lastChatId);
     try{
@@ -273,7 +291,127 @@ async function leaveGrpExecution() {
     }
 }
 
-function memberListToggle() {
+async function memberListToggle() {
+    const grpId = document.querySelector('.contact-selected').id;
+    console.log(grpId);
+    try{
+        const memberList = await fetch(`${backendAPI}/grpFind/groupMember/${grpId}`, {
+            headers: {
+                'authorization' : localStorage.getItem('token')
+            }
+        })
+        if(memberList.ok) {
+            const result = await memberList.json();
+            const list = result.memberData;
+            const currUserType = result.connectionType;
+            PrintonList(list);
+            
+            if(currUserType === 'admin'){
+                const adminElements = document.querySelectorAll('.admin');
+                adminElements.forEach(element => {
+                    element.style.display = 'flex';
+                })
+            } else {
+                const adminElements = document.querySelectorAll('.admin');
+                adminElements.forEach(elemet => {
+                    elemet.style.display = 'none';
+                })
+            }
+            console.log(list);
+            console.log(currUserType);
+        }
+    } catch(error) {
+        console.log(error);
+    }
     const memberList = document.querySelector('.popup-container2');
     memberList.style.display = 'flex';
 }
+
+function PrintonList(membList) {
+    console.log('in function');
+    const memberList = document.querySelector('.memberList');
+    memberList.innerHTML = '';
+    membList.forEach(element => {
+        const li = document.createElement('li');
+        const span1 = document.createElement('span');
+        const span2 = document.createElement('span');
+        const div = document.createElement('div');
+        const button1 = document.createElement('button');
+        const button2 = document.createElement('button');
+
+        li.classList.add('member-item');
+        
+        span1.classList.add('role_type');
+        span1.innerHTML = `<b>${element.role_type}</b>`;
+
+        span2.classList.add('member-name');
+        span2.innerHTML = `<u>${element.user.name}</u> <u>${element.user.email}</u>`;
+
+        div.classList.add('member-actions');
+
+        button1.classList.add('upgrade-btn');
+        button1.classList.add('admin');
+        button1.innerHTML='Upgrade';
+        //addEventListener
+
+        button2.classList.add('remove-btn');
+        button2.classList.add('admin');
+        button2.innerHTML = 'Remove';
+        //addEventListener
+
+        div.appendChild(button1);
+        div.appendChild(button2);
+
+        li.appendChild(span1);
+        li.appendChild(span2);
+        li.appendChild(div);
+
+        memberList.appendChild(li);
+
+
+        //console.log(element.user.id);
+        //li.setAttribute('id', `${element.user.id}`)
+    });
+}
+
+async function addMemberFunction() {
+    console.log('Add Member Function called');
+    const memberDet = document.getElementById('memberDet');
+    const info = memberDet.value.trim();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;   
+    const phoneRegex = /^\+?\d{5,15}$/;
+
+    const getInputType = (info) => {
+        if(emailRegex.test(info)) {
+            return {type: 'email', info};
+        } else if(phoneRegex.test(info)) {
+            return {type: 'mobile', info};
+        } else {
+            return {type: 'invalid', info};
+        }
+    };
+
+    const valuetype = getInputType(info);
+    if(valuetype.type !== 'invalid') {
+        const selectedGrpId = document.querySelector('.contact-selected').id;
+        //console.log(selectedGrpId);
+        const response = await fetch(`${backendAPI}/grpFind/addGroupMember/${selectedGrpId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify({valuetype})
+        });
+        if(response.ok){
+            const result = await response.json();
+            console.log(result);
+        }
+    } else {
+        memberDet.value = '';
+        alert('Add a valid Value!');
+    }
+ 
+}
+

@@ -9,7 +9,11 @@ const Chat = sequelize.define('chat', {
     },
     message_content: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
+    },
+    file_path: {
+        type: Sequelize.STRING,
+        allowNull: true
     },
     sent_by: {
         type: Sequelize.UUID,

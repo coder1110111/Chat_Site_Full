@@ -3,7 +3,12 @@ const cors = require('cors');
 const path = require('path');
 const http = require('http');
 
+const multer = require('multer');
+const fs = require('fs');
+
 require("dotenv").config();
+
+require('./cron-job');
 
 const sequelize = require('./util/database');
 
@@ -59,7 +64,7 @@ Chat.belongsTo(Group, {constraints: true, onDelete: "CASCADE", foreignKey: "grou
 
 const PORT=`${process.env.PORT}`;
 
-//sequelize.sync({force:true})
+//sequelize.sync({alter:true})
 sequelize.sync()
 .then(result => {
     server.listen(PORT, () => {

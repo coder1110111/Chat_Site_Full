@@ -1,13 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const http = require('http');
 
 require("dotenv").config();
 
 const sequelize = require('./util/database');
+
 const userRoutes = require('./routes/user');
 const chatRoutes = require('./routes/chat');
 const memberRoutes = require('./routes/member');
+const socketIo = require('./routes/socket')
  
 //Model Import
 const User = require('./models/user');
@@ -16,6 +19,8 @@ const Group = require('./models/group');
 const Connector = require('./models/connector');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo.init(server);
 
 app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -33,7 +38,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/user', userRoutes);
-app.use('/chatApp', chatRoutes);
+app.use('/chatApp', chatRoutes);  //need further look!!!!!!!!!!!!!!!!!
 app.use('/grpFind', memberRoutes);
 
 
@@ -57,7 +62,9 @@ const PORT=`${process.env.PORT}`;
 //sequelize.sync({force:true})
 sequelize.sync()
 .then(result => {
-    app.listen(PORT);
+    server.listen(PORT, () => {
+        console.log(`Server is running at port ${PORT}`);
+    });
 })
-.catch(err => console.log(err));
+.catch(err => console.log('Database Connection Error : ', err));
 

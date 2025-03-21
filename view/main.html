@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/Resources/main.css">
-    <script src="/main1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/main2.js"></script>
     <!-- <script src="/chat.js"></script> -->
     <title>ChatApp</title>
 </head>
@@ -32,14 +33,7 @@
             </div>
 
             <ul class="chat-section">
-                <li class="chat-message">
-                    <span class="sender-name">Alice</span>
-                    <p class="message-content">Hello</p>
-                </li>
-                <li class="chat-message">
-                    <span class="sender-name">John Doe</span>
-                    <p class="message-content">Hey There!</p>
-                </li>
+                
             </ul>
             <div id="anchor"></div>
 
@@ -71,22 +65,6 @@
             </div>
     
             <ul class="memberList">
-                <li class="member-item">
-                    <span class="member-name">Alice</span>
-                    <div class="member-actions">
-                        <button class="upgrade-btn admin">Upgrade</button>
-                        <button class="remove-btn admin">Remove</button>
-                    </div>
-                </li>
-                
-                <li class="member-item">
-                    <span class="role_type"><b>Admin</b></span>
-                    <span class="member-name"><u>John Doe</u></span>
-                    <div class="member-actions">
-                        <button class="upgrade-btn">Upgrade</button>
-                        <button class="remove-btn">Remove</button>
-                    </div>
-                </li>
             </ul>
         </div>
     </section>

@@ -67,3 +67,29 @@ exports.addMember = async(req, res) => {
     console.log(user);
     return res.status(200).json({message: 'request coming through', newConnector});
 }
+
+exports.removeMember = async(req, res) => {
+    
+    const role_type = req.connection.role_type;
+    if(role_type !=='admin') {
+        return res.status(403).json({message: 'Forbidden'});
+    }
+
+    const userToRemove = req.header('userToRemove');
+    console.log(userToRemove, " is the user being removed");
+
+        const t = await sequelize.transaction();
+        const existconnector = await Connector.findOne({
+            where: {
+                group_id: req.group.group_id,
+                user_id: userToRemove
+            }
+        }, {transaction : t});
+        if(!existconnector) {
+            await t.rollback();
+            return res.status(404).json({message: 'No such user found in this group'});
+        }
+        const repond = await existconnector.destroy({transaction : t});
+            t.commit();
+    
+}
